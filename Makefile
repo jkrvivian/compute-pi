@@ -1,8 +1,10 @@
 CC = gcc
-CFLAGS = -O0 -std=gnu99 -Wall -fopenmp -mavx
+CFLAGS = -O0 -std=gnu99 -Wall -fopenmp -mavx 
+LIBS = -lm
 EXECUTABLE = \
 	time_test_baseline time_test_openmp_2 time_test_openmp_4 \
 	time_test_avx time_test_avxunroll \
+	time_test_Leibniz time_test_leibizavx time_test_Leibnizavx_unroll\
 	benchmark_clock_gettime
 
 default: computepi.o
@@ -11,12 +13,15 @@ default: computepi.o
 	$(CC) $(CFLAGS) computepi.o time_test.c -DOPENMP_4 -o time_test_openmp_4
 	$(CC) $(CFLAGS) computepi.o time_test.c -DAVX -o time_test_avx
 	$(CC) $(CFLAGS) computepi.o time_test.c -DAVXUNROLL -o time_test_avxunroll
+	$(CC) $(CFLAGS) computepi.o time_test.c -DLEIBNIZ -o time_test_Leibniz 
+	$(CC) $(CFLAGS) computepi.o time_test.c -DLEIBNIZ_AVX -o time_test_leibizavx
+	$(CC) $(CFLAGS) computepi.o time_test.c -DLEIBNIZ_AVX_UNROLL -o time_test_Leibnizavx_unroll
 	$(CC) $(CFLAGS) computepi.o benchmark_clock_gettime.c -o benchmark_clock_gettime
 
 .PHONY: clean default
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@ 
+	$(CC) -c $(CFLAGS) $< -o $@  
 
 check: default
 	time ./time_test_baseline
@@ -24,6 +29,9 @@ check: default
 	time ./time_test_openmp_4
 	time ./time_test_avx
 	time ./time_test_avxunroll
+	time ./time_test_Leibniz
+	time ./time_test_leibizavx
+	time ./time_test_Leibnizavx_unroll
 
 gencsv: default
 	for i in `seq 1000 1000 250000`; do \

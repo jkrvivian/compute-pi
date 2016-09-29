@@ -62,8 +62,35 @@ int main(int argc, char const *argv[])
         compute_pi_avx_unroll(N);
     }
     clock_gettime(CLOCK_ID, &end);
-    printf("%lf\n", (double) (end.tv_sec - start.tv_sec) +
+    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
            (end.tv_nsec - start.tv_nsec)/ONE_SEC);
 
+
+    // Leibniz
+    clock_gettime(CLOCK_ID, &start);
+    for(i = 0; i < loop; i++) {
+        compute_pi_Leibniz(N);
+    }
+    clock_gettime(CLOCK_ID, &end);
+    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
+
+    // Leibniz AVX SIMD
+    clock_gettime(CLOCK_ID, &start);
+    for(i = 0; i < loop; i++) {
+        compute_pi_leibizavx(N);
+    }
+    clock_gettime(CLOCK_ID, &end);
+    printf("%lf,", (double) (end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
+
+    // Leibniz AVX SIMD UNROLL
+    clock_gettime(CLOCK_ID, &start);
+    for(i = 0; i < loop; i++) {
+        compute_pi_Leibnizavx_unroll(N);
+    }
+    clock_gettime(CLOCK_ID, &end);
+    printf("%lf\n", (double) (end.tv_sec - start.tv_sec) +
+           (end.tv_nsec - start.tv_nsec)/ONE_SEC);
     return 0;
 }
